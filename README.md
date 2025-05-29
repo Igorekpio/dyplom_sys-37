@@ -42,4 +42,15 @@
 -
 
 - 
-после устнвоки ansible необходимо установить роли которые запускаются в 
+после устнвоки ansible необходимо установить роли которые запускаются в
+- запускаем плайбук1
+- ![image](https://github.com/user-attachments/assets/8207e1d0-1bf3-4464-8f0c-adf90066613d)
+
+- проверяем пинг всех хостов
+- ![image](https://github.com/user-attachments/assets/3bb18fc8-caa6-4004-b56d-7d4a380c8aae)
+-
+-
+-
+-
+
+
