@@ -1,0 +1,89 @@
+---
+- name: Complete Configuration of Nginx Servers with Monitoring
+  hosts: web_servers
+  become: yes
+
+  tasks:
+    - name: Update APT cache and upgrade packages
+      apt:
+        force_apt_get: true
+        upgrade: dist
+        update_cache: yes
+      become: true
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+
+    - name: Create combined stub_status config file
+      blockinfile:
+        path: /etc/nginx/conf.d/stub_status.conf
+        block: |
+          server {
+              listen 127.0.0.1:80;
+              server_name 127.0.0.1;
+              location /nginx_status {
+                  stub_status on;
+                  access_log off;
+                  allow 127.0.0.1;
+                  deny all;
+              }
+              location = /basic_status {
+                  stub_status;
+                  allow 127.0.0.1;
+                  allow ::1;
+                  deny all;
+              }
+          }
+        create: yes
+        backup: yes
+      notify: Restart Nginx
+
+    - name: Verify log file ownership and add zabbix to adm group
+      file:
+        path: /var/log/nginx/access.log
+        owner: www-data
+        group: adm
+        mode: '0640'
+      notify: Reload Nginx
+
+    - name: Add zabbix user to adm group
+      user:
+        name: zabbix
+        groups: adm
+        append: yes
+
+    - name: Enable stub_status monitoring in Zabbix
+      debug:
+        msg: "Please manually activate stub_status item in Zabbix."
+
+    - name: Copy index.html to webserver 1
+      ansible.builtin.copy:
+        src: ./www/index1.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: sudo
+        mode: "0644"
+      when: inventory_hostname == 'web_server_1'
+
+    - name: Copy index.html to webserver 2
+      ansible.builtin.copy:
+        src: ./www/index2.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: sudo
+        mode: "0644"
+      when: inventory_hostname == 'web_server_2'
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
