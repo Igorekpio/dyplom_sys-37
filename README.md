@@ -64,6 +64,8 @@
 - проверка zabbix ip 89.169.159.216 Логин: Admin  Пароль: zabbix
 ![image](https://github.com/user-attachments/assets/4c36c273-71fd-4f54-957c-aa9ff9ec1d5d)
 
+![image](https://github.com/user-attachments/assets/59f6f76a-8ff2-40db-a26b-07e427a0c923)
+
 - проверяем elastic + kibana ip 158.160.40.17
 ![image](https://github.com/user-attachments/assets/567a948d-759d-49bb-b27b-09d8d5eabd38)
 
